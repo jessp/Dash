@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.util.Log;
@@ -26,7 +25,7 @@ import java.util.Map;
 public class MainActivityFragment extends Fragment {
     private ArrayAdapter<String> smsAdaptor;
     private BroadcastReceiver smsReceiver;
-    private String TAG = "MainActivity: ";
+    private String TAG = "MainActivityFragment: ";
     static Map<String,Integer[]> morse_values = new HashMap<String, Integer[]>();
     static {
         morse_values.put("A", new Integer[]{1, 3});
@@ -100,7 +99,6 @@ public class MainActivityFragment extends Fragment {
 
 
     public MainActivityFragment() {
-
     }
 
     @Override
@@ -118,7 +116,6 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-
 //                if (intent.getAction().equals(SMS_RECEIVED)) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
@@ -134,15 +131,22 @@ public class MainActivityFragment extends Fragment {
                             theMessage += messages[k].getMessageBody();
                         }
                         Log.v("Received?", theMessage);
-                        String message = theMessage.toUpperCase();
-                        long[] buzzArray = generateBuzzes(message);
-                        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                        vibrator.vibrate(buzzArray, -1);
+                        String message = sanitzeMessage(theMessage);
+                        ((MainActivity)getActivity()).sendTextToBean(message);
                     }
                 }
 
             }
         };
+    }
+
+
+    private String sanitzeMessage(String message){
+        message = message.toUpperCase();
+        message = message.replaceAll("[^ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?'!/()&:;=+-_\"$@ \n]", "");
+        Log.v(TAG, message);
+        message = message + "~";
+        return message;
     }
 
     private void registerSMSReceiver() {

@@ -50,6 +50,11 @@ public class BeanClass {
         }
     }
 
+    public void sendMessage(String message){
+        Log.d(TAG, message);
+        myBean.sendSerialMessage(message);
+    }
+
     public void sync() {
         Log.d(TAG, "Start Sync...");
 //        if (myBean == null) {
@@ -90,6 +95,8 @@ public class BeanClass {
 
             myThread.start();
         }
+
+
 
         @Override
         public void onConnectionFailed() {

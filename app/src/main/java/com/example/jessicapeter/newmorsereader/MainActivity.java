@@ -2,13 +2,14 @@ package com.example.jessicapeter.newmorsereader;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    private BeanClass myBean;
+    public BeanClass myBean;
+    private String TAG = "MainActivity: ";
 
 
     @Override
@@ -42,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void sendTextToBean(String message){
+        Log.d(TAG, message);
+        myBean.sendMessage(message);
+    }
+
 }
 
 
