@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,7 +68,6 @@ public class MainActivityFragment extends Fragment {
         morse_values.put("!", new Integer[]{3, 1, 3, 1, 3, 3});
         morse_values.put(",", new Integer[]{3, 3, 1, 1, 3, 3});
         morse_values.put("&", new Integer[]{1, 3, 1, 1, 1});
-        morse_values.put("?", new Integer[]{1, 1, 3, 3, 1, 1});
         morse_values.put("'", new Integer[]{1, 3, 3, 3, 3, 1});
         morse_values.put("\"", new Integer[]{1, 3, 1, 1, 3, 1});
         morse_values.put("/", new Integer[]{3, 1, 1, 3, 1});
@@ -79,7 +77,6 @@ public class MainActivityFragment extends Fragment {
         morse_values.put("=", new Integer[]{3, 1, 1, 1, 3});
         morse_values.put("-", new Integer[]{3, 1, 1, 1, 1, 3});
         morse_values.put("_", new Integer[]{1, 1, 3, 3, 1, 3});
-        morse_values.put("+", new Integer[]{1, 3, 1, 3, 1});
         morse_values.put(";", new Integer[]{3, 1, 3, 1, 3, 1});
         morse_values.put(":", new Integer[]{3, 3, 3, 1, 1, 1});
         morse_values.put("(", new Integer[]{3, 1, 3, 3, 1});
@@ -94,8 +91,6 @@ public class MainActivityFragment extends Fragment {
 
     //Character sets
     private final String CHARSET_MORSE  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?'!/()&:;=+-_\"$@0123456789";
-
-
 
 
     public MainActivityFragment() {
@@ -115,7 +110,6 @@ public class MainActivityFragment extends Fragment {
         smsReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
-
 //                if (intent.getAction().equals(SMS_RECEIVED)) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
@@ -132,72 +126,50 @@ public class MainActivityFragment extends Fragment {
                         }
                         Log.v("Received?", theMessage);
                         String message = sanitzeMessage(theMessage);
+                        String binaryMessage = convertToBinary(message);
+                        Log.v(TAG, binaryMessage);
+                        ((MainActivity)getActivity()).sendTextToBean(binaryMessage);
                         ((MainActivity)getActivity()).sendTextToBean(message);
                     }
                 }
-
             }
         };
     }
-
 
     private String sanitzeMessage(String message){
         message = message.toUpperCase();
         message = message.replaceAll("[^ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?'!/()&:;=+-_\"$@ \n]", "");
         Log.v(TAG, message);
-        message = message + "~";
         return message;
+    }
+
+    private String convertToBinary(String message){
+        String binaryList = "";
+        for (int i = 0; i < message.length(); i++){
+            if (morse_values.containsKey(Character.toString(message.charAt(i)))){
+                for (int k = 0; k < morse_values.get(Character.toString(message.charAt(i))).length; k++){
+                    for (int l = 0; l < morse_values.get(Character.toString(message.charAt(i)))[k]; l++){
+                        binaryList += 1;
+                    }
+                    if (k != morse_values.get(Character.toString(message.charAt(i))).length-1){
+                        binaryList += 0;
+                    }
+                }
+                for (int l = 0; l < DOTS_IN_LETTER_GAP; l++){
+                    binaryList +=0;
+                }
+            } else {
+                for (int l = 0; l < DOTS_IN_WORD_GAP-1; l++){
+                    binaryList +=0;
+                }
+            }
+        }
+        return binaryList;
     }
 
     private void registerSMSReceiver() {
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         getActivity().registerReceiver(smsReceiver, intentFilter);
     }
-
-    private long[] generateBuzzes(String message){
-        ArrayList<Integer> buzzes = new ArrayList<Integer>();
-        buzzes.add(250);
-
-
-        for (int i = 0; i < message.length(); i++){
-            if (morse_values.containsKey(Character.toString(message.charAt(i)))){
-                for (int k = 0; k < morse_values.get(Character.toString(message.charAt(i))).length; k++){
-                    buzzes.add(morse_values.get(Character.toString(message.charAt(i)))[k] * DURATION_PER_NODE);
-                    if (k != morse_values.get(Character.toString(message.charAt(i))).length-1){
-                        buzzes.add(DOTS_IN_INNER_LETTER_GAP * DURATION_PER_NODE);
-                    }
-                }
-                buzzes.add(DOTS_IN_LETTER_GAP * DURATION_PER_NODE);
-            } else {
-                buzzes.add(0);
-                buzzes.add(DOTS_IN_WORD_GAP * DURATION_PER_NODE);
-            }
-
-
-        }
-        long[] buzzArray = new long[buzzes.size()];
-        for (int j = 0; j < buzzes.size(); j++){
-            buzzArray[j] = (long) buzzes.get(j);
-        }
-        return buzzArray;
-    }
-
-    static String[] concat(String[]... arrays) {
-        int length = 0;
-        for (String[] array : arrays) {
-            length += array.length;
-        }
-        String[] result = new String[length];
-        int pos = 0;
-        for (String[] array : arrays) {
-            for (String element : array) {
-                result[pos] = element;
-                pos++;
-            }
-        }
-        return result;
-    }
-
-
 
 }

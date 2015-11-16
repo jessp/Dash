@@ -51,8 +51,12 @@ public class BeanClass {
     }
 
     public void sendMessage(String message){
-        Log.d(TAG, message);
-        myBean.sendSerialMessage(message);
+        if (myBean.isConnected()) {
+            Log.d(TAG, "Sending message: " + message);
+            myBean.sendSerialMessage(message);
+        } else {
+            Log.d(TAG, "Bean not connected :(");
+        }
     }
 
     public void sync() {
@@ -112,8 +116,6 @@ public class BeanClass {
         public void onSerialMessageReceived(byte[] bytes) {
             Log.d(TAG, "onSerialMessageReceived: " + new String(bytes, StandardCharsets.UTF_8));
             isReceived = true;
-//            myThread.interrupt();
-
         }
 
         @Override
