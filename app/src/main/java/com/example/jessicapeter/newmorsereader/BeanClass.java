@@ -1,11 +1,14 @@
 package com.example.jessicapeter.newmorsereader;
 
+//https://github.com/samanyukansara/smartplants/blob/master/app/src/main/java/nz/ac/aucklanduni/smartplants/BeanServices/BeanConnector.java
+
 /**
  * Created by jessicapeter on 2015-11-08.
  */
 
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.punchthrough.bean.sdk.Bean;
@@ -16,6 +19,8 @@ import com.punchthrough.bean.sdk.message.BeanError;
 import com.punchthrough.bean.sdk.message.ScratchBank;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 //maybe look at below url for more complete example
 //https://github.com/PunchThrough/Bean-Android-SDK/blob/master/sdk/src/androidTest/java/com/punchthrough/bean/sdk/TestBean.java
@@ -51,20 +56,36 @@ public class BeanClass {
     }
 
     public void sendMessage(String message){
-        if (myBean.isConnected()) {
-            Log.d(TAG, "Sending message: " + message);
-            myBean.sendSerialMessage(message);
+        if (myBean != null) {
+            Log.d(TAG, "" + myBean.isConnected());
+            List<String> thisMessage = new ArrayList<String>();
+            int index = 0;
+
+            while (index < message.length()) {
+                thisMessage.add(message.substring(index, Math.min(index + 30,message.length())));
+                index += 30;
+            }
+
+            for (int i = 0; i < thisMessage.size(); i++){
+                Log.d(TAG, "" + thisMessage.get(i));
+                myBean.sendSerialMessage(thisMessage.get(i) + "~");
+                SystemClock.sleep(1000);
+            }
+
+            myBean.sendSerialMessage("`~");
         } else {
             Log.d(TAG, "Bean not connected :(");
+//            findBean();
+//            myBean.sendSerialMessage(message);
         }
     }
 
     public void sync() {
         Log.d(TAG, "Start Sync...");
-//        if (myBean == null) {
-//            Log.d(TAG, "Starting Bean discovery...");
-//            BeanManager.getInstance().startDiscovery(discoveryListener);
-//        }
+        if (myBean == null) {
+            Log.d(TAG, "Starting Bean discovery...");
+            BeanManager.getInstance().startDiscovery(discoveryListener);
+        }
         if (!myBean.isConnected()) {
             Log.d(TAG, "Starting to connect to bean named " + BEAN_NAME);
             myBean.connect(this.context, beanListener);
@@ -97,7 +118,7 @@ public class BeanClass {
         public void onConnected() {
             Log.d(TAG, "Connected!");
 
-            myThread.start();
+//            myThread.start();
         }
 
 
@@ -147,6 +168,7 @@ public class BeanClass {
         }
     };
 
-    Thread myThread = new Thread(spamSend);
+//    Thread myThread = new Thread(spamSend);
+
 
 }

@@ -2,7 +2,6 @@ package com.example.jessicapeter.newmorsereader;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -44,8 +43,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    public void onPause() {
+//        super.onPause();  // Always call the superclass method first
+//
+//        if (myBean != null){
+//            if (myBean.isConnected())
+//        }
+//
+//    }
+
     public void sendTextToBean(String message){
-        Log.d(TAG, message);
+
         myBean.sendMessage(message);
     }
 

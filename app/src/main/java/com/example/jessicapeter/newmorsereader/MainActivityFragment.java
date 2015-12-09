@@ -96,6 +96,8 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,7 +131,7 @@ public class MainActivityFragment extends Fragment {
                         String binaryMessage = convertToBinary(message);
                         Log.v(TAG, binaryMessage);
                         ((MainActivity)getActivity()).sendTextToBean(binaryMessage);
-                        ((MainActivity)getActivity()).sendTextToBean(message);
+//                        ((MainActivity)getActivity()).sendTextToBean(message);
                     }
                 }
             }
@@ -171,5 +173,7 @@ public class MainActivityFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         getActivity().registerReceiver(smsReceiver, intentFilter);
     }
+
+
 
 }
