@@ -8,7 +8,6 @@ package com.example.jessicapeter.newmorsereader;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.punchthrough.bean.sdk.Bean;
@@ -34,10 +33,12 @@ public class BeanClass {
 
     protected Context context;
     protected Bean myBean;
-    boolean isReceived = false;
-    String mostRecentMessage = "";
+    int currentMessageIterator = 0;
+    ArrayList<String> messageToSend;
+    int attemptsIterator = 0;
+
     boolean waitingForReceipt = false;
-//    SendMessageChunks myAsyncHandler = new SendMessageChunks();
+
 
 
     public BeanClass(Context context) {
@@ -59,110 +60,62 @@ public class BeanClass {
 
     public void sendMessage(String message){
         if (myBean != null) {
+            attemptsIterator = 0;
             Log.d(TAG, "" + myBean.isConnected());
             ArrayList<String> thisMessage = new ArrayList<String>();
             int index = 0;
+            messageToSend = thisMessage;
 
             while (index < message.length()) {
                 thisMessage.add(message.substring(index, Math.min(index + 30,message.length())));
                 index += 30;
             }
+                waitingForReceipt = true;
+                Log.d(TAG, "" + thisMessage.get(0));
+                if (0 == thisMessage.size()-1){
+                    myBean.sendSerialMessage(thisMessage.get(0) + "`~");
+                } else {
+                    myBean.sendSerialMessage(thisMessage.get(0) + "~");
+                }
 
-            SendMessageChunks myAsyncHandler = new SendMessageChunks();
-            myAsyncHandler.execute(thisMessage);
 
-//            for (int i = 0; i < thisMessage.size(); i++){
-//                Log.d(TAG, "" + thisMessage.get(i));
-//                myBean.sendSerialMessage(thisMessage.get(i) + "~");
-//                SystemClock.sleep(1000);
-//            }
-
-            myBean.sendSerialMessage("`~");
         } else {
             Log.d(TAG, "Bean not connected :(");
-//            findBean();
-//            myBean.sendSerialMessage(message);
+//            add code in to locate bean
         }
     }
 
-    private class SendMessageChunks extends AsyncTask<ArrayList<String>, Void, Void> {
-        /** The system calls this to perform work in a worker thread and
-         * delivers it the parameters given to AsyncTask.execute() */
-        int currentIterator;
-        ArrayList<String> currentArray;
-        int messageCounter = 0;
-
-        protected Void doInBackground(ArrayList<String>... theMessage) {
-            waitingForReceipt = true;
-
-            currentArray = theMessage[0];
-            currentIterator = 0;
-                    if (currentIterator == theMessage[0].size() - 1) {
-                        myBean.sendSerialMessage(theMessage[0].get(currentIterator) + "`~");
-                    } else {
-                        myBean.sendSerialMessage(theMessage[0].get(currentIterator) + "~");
-                    }
-            messageCounter ++;
-            Log.v(TAG, "" + messageCounter);
-            return null;
-        }
-
-        void proceed(){
-
-            //if we received the message correctly...
-            if (mostRecentMessage.equals(currentArray.get(currentIterator))){
-                Log.v(TAG, "Yay :)");
-                Log.v(TAG, "Most recent: " + mostRecentMessage);
-                messageCounter = 0;
-                //check if we've been through every part of the array
-                if (currentIterator != currentArray.size()-1){
-                    currentIterator += 1;
-                    if (currentIterator == currentArray.size() - 1) {
-                        myBean.sendSerialMessage(currentArray.get(currentIterator) + "`~");
-                    } else {
-                        myBean.sendSerialMessage(currentArray.get(currentIterator) + "~");
-                    }
-
-                } else {
-                    waitingForReceipt = false;
-                    Log.v(TAG, "We got the whole message!");
-                }
-                //but if we haven't received the message correctly...
+    void proceedWithNextChunk(){
+        attemptsIterator = 0;
+        if (currentMessageIterator != messageToSend.size()-1) {
+            currentMessageIterator++;
+            if (currentMessageIterator == messageToSend.size() - 1) {
+                myBean.sendSerialMessage(messageToSend.get(currentMessageIterator) + "`~");
             } else {
-                messageCounter ++;
-                Log.v(TAG, "Nay :(");
-                Log.v(TAG, "Most recent: " + mostRecentMessage);
-                messageCounter ++;
-                if (messageCounter < 5){
-                    if (currentIterator != currentArray.size()-1){
-                        currentIterator += 1;
-                        if (currentIterator == currentArray.size() - 1) {
-                            myBean.sendSerialMessage(currentArray.get(currentIterator) + "`~");
-                        } else {
-                            myBean.sendSerialMessage(currentArray.get(currentIterator) + "~");
-                        }
-
-                    }
-                } else {
-                    waitingForReceipt = false;
-                    Log.v(TAG, "Give up on this message, bro");
-                }
-
+                myBean.sendSerialMessage(messageToSend.get(currentMessageIterator) + "~");
             }
-        }
-
-
-
-        protected void onPostExecute(Boolean result) {
-            if (result){
-                Log.v(TAG, "finished!");
-            } else {
-                Log.v(TAG, "still going!");
-            }
-
-//            showDialog("Downloaded " + result + " bytes");
+        } else {
+            currentMessageIterator = 0;
+            waitingForReceipt = false;
         }
     }
+
+    void repeatLastChunk(){
+        attemptsIterator++;
+        if (attemptsIterator < 5) {
+            if (currentMessageIterator == messageToSend.size() - 1) {
+                myBean.sendSerialMessage(messageToSend.get(currentMessageIterator) + "`~");
+            } else {
+                myBean.sendSerialMessage(messageToSend.get(currentMessageIterator) + "~");
+            }
+        } else {
+            Log.v(TAG, "Give up on this one");
+            waitingForReceipt = false;
+        }
+    }
+
+
+
 
     public void sync() {
         Log.d(TAG, "Start Sync...");
@@ -217,12 +170,18 @@ public class BeanClass {
 
         @Override
         public void onSerialMessageReceived(byte[] bytes) {
-            Log.d(TAG, "onSerialMessageReceived: " + new String(bytes, StandardCharsets.UTF_8));
-            isReceived = true;
-            mostRecentMessage = bytes.toString();
-            if (waitingForReceipt){
-                myAsyncHandler.proceed();
-            }
+            String myMessage = new String(bytes, StandardCharsets.UTF_8);
+            if (!myMessage.trim().equals("")) {
+                Log.d(TAG, "onSerialMessageReceived: " + new String(bytes, StandardCharsets.UTF_8));
+                if (waitingForReceipt){
+                        if (myMessage.trim().equals("n")){
+                            Log.v(TAG, "yes, tis true");
+                            repeatLastChunk();
+                        } else {
+                            proceedWithNextChunk();
+                        }
+                    }
+                }
         }
 
         @Override
