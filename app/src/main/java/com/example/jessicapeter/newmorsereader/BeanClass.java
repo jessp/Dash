@@ -171,8 +171,8 @@ public class BeanClass {
         @Override
         public void onSerialMessageReceived(byte[] bytes) {
             String myMessage = new String(bytes, StandardCharsets.UTF_8);
+            Log.d(TAG, "onSerialMessageReceived: " + myMessage);
             if (!myMessage.trim().equals("")) {
-                Log.d(TAG, "onSerialMessageReceived: " + new String(bytes, StandardCharsets.UTF_8));
                 if (waitingForReceipt){
                         if (myMessage.trim().equals("n")){
                             Log.v(TAG, "yes, tis true");
