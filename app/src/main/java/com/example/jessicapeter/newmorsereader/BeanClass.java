@@ -1,6 +1,5 @@
 package com.example.jessicapeter.newmorsereader;
 
-//https://github.com/samanyukansara/smartplants/blob/master/app/src/main/java/nz/ac/aucklanduni/smartplants/BeanServices/BeanConnector.java
 
 /**
  * Created by jessicapeter on 2015-11-08.
@@ -175,7 +174,6 @@ public class BeanClass {
             if (!myMessage.trim().equals("")) {
                 if (waitingForReceipt){
                         if (myMessage.trim().equals("n")){
-                            Log.v(TAG, "yes, tis true");
                             repeatLastChunk();
                         } else {
                             proceedWithNextChunk();

@@ -43,15 +43,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();  // Always call the superclass method first
-//
-//        if (myBean != null){
-//            if (myBean.isConnected())
-//        }
-//
-//    }
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+
+    }
 
     public void sendTextToBean(String message){
 

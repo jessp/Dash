@@ -13,8 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -22,10 +25,14 @@ import java.util.Map;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
     private ArrayAdapter<String> smsAdaptor;
+
     private BroadcastReceiver smsReceiver;
     private String TAG = "MainActivityFragment: ";
     static Map<String,Integer[]> morse_values = new HashMap<String, Integer[]>();
+    List<String> listSms = new ArrayList<String>();
+
     static {
         morse_values.put("A", new Integer[]{1, 3});
         morse_values.put("B", new Integer[]{3, 1, 1, 1});
@@ -96,6 +103,14 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+    //onCreate happens when a fragment is created -- happens before the oncreateview
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        // Add this line in order for this fragment to handle menu events.{
+        super.onCreate(savedInstanceState);
+        //call this to report that this fragment has menu options
+//        setHasOptionsMenu(true);
+    }
 
 
     @Override
@@ -104,7 +119,24 @@ public class MainActivityFragment extends Fragment {
         initializeSMSReceiver();
         registerSMSReceiver();
 
-        return inflater.inflate(R.layout.fragment_morse, container, false);
+
+        smsAdaptor =
+                new ArrayAdapter<String>(
+                        //the current context (this activity)
+                        getActivity(),
+                        //the name of the layout id
+                        R.layout.list_item_morse,
+                        //the id of the textview to populate
+                        R.id.list_item_sms_textview,
+                        //the arraylist
+                        listSms
+                );
+        //find the listview and attach the adaptor
+        View rootView = inflater.inflate(R.layout.fragment_morse, container, false);
+        ListView listView = (ListView) rootView.findViewById(R.id.listview_sms);
+        listView.setAdapter(smsAdaptor);
+
+        return rootView;
 
     }
 
@@ -128,10 +160,13 @@ public class MainActivityFragment extends Fragment {
                         }
                         Log.v("Received?", theMessage);
                         String message = sanitzeMessage(theMessage);
+                        listSms.add(message);
+                        smsAdaptor.clear();
+                        smsAdaptor.add(message);
                         String binaryMessage = convertToBinary(message);
                         Log.v(TAG, binaryMessage);
-                        ((MainActivity)getActivity()).sendTextToBean(binaryMessage);
-//                        ((MainActivity)getActivity()).sendTextToBean(message);
+                        ((MainActivity) getActivity()).sendTextToBean(binaryMessage);
+
                     }
                 }
             }
