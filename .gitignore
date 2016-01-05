@@ -36,6 +36,10 @@ build/
 gradle/
 *.gradle
 !app/build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+
 
 #NDK
 obj/
