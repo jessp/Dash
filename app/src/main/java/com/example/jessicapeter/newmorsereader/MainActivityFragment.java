@@ -34,66 +34,61 @@ public class MainActivityFragment extends Fragment {
     List<String> listSms = new ArrayList<String>();
 
     static {
-        morse_values.put("A", new Integer[]{1, 3});
-        morse_values.put("B", new Integer[]{3, 1, 1, 1});
-        morse_values.put("C", new Integer[]{3, 1, 3, 1});
-        morse_values.put("D", new Integer[]{3, 1, 1});
-        morse_values.put("E", new Integer[]{1});
-        morse_values.put("F", new Integer[]{1, 1, 3, 1});
-        morse_values.put("G", new Integer[]{3, 3, 1});
-        morse_values.put("H", new Integer[]{1, 1, 1, 1});
-        morse_values.put("I", new Integer[]{1, 1});
-        morse_values.put("J", new Integer[]{1, 3, 3, 3});
-        morse_values.put("K", new Integer[]{3, 1, 3});
-        morse_values.put("L", new Integer[]{1, 3, 1, 1});
-        morse_values.put("M", new Integer[]{3, 3});
-        morse_values.put("N", new Integer[]{3, 1});
-        morse_values.put("O", new Integer[]{3, 3, 3});
-        morse_values.put("P", new Integer[]{1, 3, 3, 1});
-        morse_values.put("Q", new Integer[]{3, 3, 1, 3});
-        morse_values.put("R", new Integer[]{1, 3, 1});
-        morse_values.put("S", new Integer[]{1, 1, 1});
-        morse_values.put("T", new Integer[]{3});
-        morse_values.put("U", new Integer[]{1, 1, 3});
-        morse_values.put("V", new Integer[]{1, 1, 1, 3});
-        morse_values.put("W", new Integer[]{1, 3, 3});
-        morse_values.put("X", new Integer[]{3, 1, 1, 3});
-        morse_values.put("Y", new Integer[]{3, 1, 3, 3});
-        morse_values.put("Z", new Integer[]{3, 1, 3, 3});
-        morse_values.put("3", new Integer[]{1});
-        morse_values.put("3", new Integer[]{1, 1});
-        morse_values.put("3", new Integer[]{1, 1, 1});
-        morse_values.put("4", new Integer[]{1, 1, 1, 1});
-        morse_values.put("5", new Integer[]{1, 1, 1, 1, 1});
-        morse_values.put("6", new Integer[]{1, 1, 1, 1, 1, 1});
-        morse_values.put("7", new Integer[]{1, 1, 1, 1, 1, 1, 1});
-        morse_values.put("8", new Integer[]{1, 1, 1, 1, 1, 1, 1, 1});
-        morse_values.put("9", new Integer[]{1, 1, 1, 1, 1, 1, 1, 1, 1});
-        morse_values.put("1", new Integer[]{3});
-        morse_values.put(".", new Integer[]{1, 3, 1, 3, 1, 3});
-        morse_values.put("?", new Integer[]{1, 1, 3, 3, 1, 1});
-        morse_values.put("!", new Integer[]{3, 1, 3, 1, 3, 3});
-        morse_values.put(",", new Integer[]{3, 3, 1, 1, 3, 3});
-        morse_values.put("&", new Integer[]{1, 3, 1, 1, 1});
-        morse_values.put("'", new Integer[]{1, 3, 3, 3, 3, 1});
-        morse_values.put("\"", new Integer[]{1, 3, 1, 1, 3, 1});
-        morse_values.put("/", new Integer[]{3, 1, 1, 3, 1});
-        morse_values.put("$", new Integer[]{1, 1, 1, 3, 1, 1, 3});
-        morse_values.put("@", new Integer[]{1, 3, 3, 1, 3, 1});
-        morse_values.put("+", new Integer[]{1, 3, 1, 3, 1});
-        morse_values.put("=", new Integer[]{3, 1, 1, 1, 3});
-        morse_values.put("-", new Integer[]{3, 1, 1, 1, 1, 3});
-        morse_values.put("_", new Integer[]{1, 1, 3, 3, 1, 3});
-        morse_values.put(";", new Integer[]{3, 1, 3, 1, 3, 1});
-        morse_values.put(":", new Integer[]{3, 3, 3, 1, 1, 1});
-        morse_values.put("(", new Integer[]{3, 1, 3, 3, 1});
-        morse_values.put(")", new Integer[]{3, 1, 3, 3, 1, 3});
+        morse_values.put("A", new Integer[]{0, 1});
+        morse_values.put("B", new Integer[]{1, 0, 0, 0});
+        morse_values.put("C", new Integer[]{1, 0, 1, 0});
+        morse_values.put("D", new Integer[]{1, 0, 0});
+        morse_values.put("E", new Integer[]{0});
+        morse_values.put("F", new Integer[]{0, 0, 1, 0});
+        morse_values.put("G", new Integer[]{1, 1, 0});
+        morse_values.put("H", new Integer[]{0, 0, 0, 0});
+        morse_values.put("I", new Integer[]{0, 0});
+        morse_values.put("J", new Integer[]{0, 1, 1, 1});
+        morse_values.put("K", new Integer[]{1, 0, 1});
+        morse_values.put("L", new Integer[]{0, 1, 0, 0});
+        morse_values.put("M", new Integer[]{1, 1});
+        morse_values.put("N", new Integer[]{1, 0});
+        morse_values.put("O", new Integer[]{1, 1, 1});
+        morse_values.put("P", new Integer[]{0, 1, 1, 0});
+        morse_values.put("Q", new Integer[]{1, 1, 0, 1});
+        morse_values.put("R", new Integer[]{0, 1, 0});
+        morse_values.put("S", new Integer[]{0, 0, 0});
+        morse_values.put("T", new Integer[]{1});
+        morse_values.put("U", new Integer[]{0, 0, 1});
+        morse_values.put("V", new Integer[]{0, 0, 0, 1});
+        morse_values.put("W", new Integer[]{0, 1, 1});
+        morse_values.put("X", new Integer[]{1, 0, 0, 1});
+        morse_values.put("Y", new Integer[]{1, 0, 1, 1});
+        morse_values.put("Z", new Integer[]{1, 0, 1, 1});
+        morse_values.put("1", new Integer[]{0});
+        morse_values.put("1", new Integer[]{0, 0});
+        morse_values.put("1", new Integer[]{0, 0, 0});
+        morse_values.put("4", new Integer[]{0, 0, 0, 0});
+        morse_values.put("5", new Integer[]{0, 0, 0, 0, 0});
+        morse_values.put("6", new Integer[]{0, 0, 0, 0, 0, 0});
+        morse_values.put("7", new Integer[]{0, 0, 0, 0, 0, 0, 0});
+        morse_values.put("8", new Integer[]{0, 0, 0, 0, 0, 0, 0, 0});
+        morse_values.put("9", new Integer[]{0, 0, 0, 0, 0, 0, 0, 0, 0});
+        morse_values.put("0", new Integer[]{1});
+        morse_values.put(".", new Integer[]{0, 1, 0, 1, 0, 1});
+        morse_values.put("?", new Integer[]{0, 0, 1, 1, 0, 0});
+        morse_values.put("!", new Integer[]{1, 0, 1, 0, 1, 1});
+        morse_values.put(",", new Integer[]{1, 1, 0, 0, 1, 1});
+        morse_values.put("&", new Integer[]{0, 1, 0, 0, 0});
+        morse_values.put("'", new Integer[]{0, 1, 1, 1, 1, 0});
+        morse_values.put("\"", new Integer[]{0, 1, 0, 0, 1, 0});
+        morse_values.put("/", new Integer[]{1, 0, 0, 1, 0});
+        morse_values.put("$", new Integer[]{0, 0, 0, 1, 0, 0, 1});
+        morse_values.put("@", new Integer[]{0, 1, 1, 0, 1, 0});
+        morse_values.put("+", new Integer[]{0, 1, 0, 1, 0});
+        morse_values.put("=", new Integer[]{1, 0, 0, 0, 1});
+        morse_values.put("-", new Integer[]{1, 0, 0, 0, 0, 1});
+        morse_values.put("_", new Integer[]{0, 0, 1, 1, 0, 1});
+        morse_values.put(";", new Integer[]{1, 0, 1, 0, 1, 0});
+        morse_values.put(":", new Integer[]{1, 1, 1, 0, 0, 0});
+        morse_values.put("(", new Integer[]{1, 0, 1, 1, 0});
+        morse_values.put(")", new Integer[]{1, 0, 1, 1, 0, 1});
     }
-    //MainActivity code
-    private static final int DOTS_IN_INNER_LETTER_GAP        = 1;
-    private static final int DOTS_IN_LETTER_GAP              = 3;
-    private static final int DOTS_IN_WORD_GAP                = 5;
-    private static final int DURATION_PER_NODE               = 100;
 
 
     //Character sets
@@ -185,20 +180,17 @@ public class MainActivityFragment extends Fragment {
         for (int i = 0; i < message.length(); i++){
             if (morse_values.containsKey(Character.toString(message.charAt(i)))){
                 for (int k = 0; k < morse_values.get(Character.toString(message.charAt(i))).length; k++){
-                    for (int l = 0; l < morse_values.get(Character.toString(message.charAt(i)))[k]; l++){
-                        binaryList += 1;
-                    }
+                    binaryList += morse_values.get(Character.toString(message.charAt(i)))[k];
+                    //below is the gap between dots and dashes in a single character
                     if (k != morse_values.get(Character.toString(message.charAt(i))).length-1){
-                        binaryList += 0;
+                        binaryList += 2;
                     }
                 }
-                for (int l = 0; l < DOTS_IN_LETTER_GAP; l++){
-                    binaryList +=0;
-                }
+                //below is gap between letters
+                    binaryList +=3;
             } else {
-                for (int l = 0; l < DOTS_IN_WORD_GAP-1; l++){
-                    binaryList +=0;
-                }
+                //below is gap between words
+                    binaryList +=4;
             }
         }
         return binaryList;
