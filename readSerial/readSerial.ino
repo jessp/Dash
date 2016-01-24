@@ -4,14 +4,13 @@ String receivedString;
 String oneMessage[20];
 String completedMessage = "";
 const int outPin = 5;
-int oneNote = 3000;
-int longNote = 6; //dash
+int oneNote = 100;
+int longNote = 3; //dash
 int shortNote = 1; //dots
 int innerGap = 1; //gap between dashes/dots in single letter
-int letterGap = 6; //gap between letters
-int wordGap = 14; //gap between words
+int letterGap = 3; //gap between letters
+int wordGap = 7; //gap between words
 int currentTone = 0; //keep track of current note played
-int rest_count = 200;
 
 void setup() {
   pinMode(outPin, OUTPUT);
@@ -46,53 +45,25 @@ void sonifyMessage(String oneMessage){
 
 
 void playTone() {
-  long elapsed_time = 0;
   if (currentTone == 0) {
-    //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < (oneNote * shortNote)) {
-
       digitalWrite(outPin,HIGH);
-
-      // Keep track of how long we pulsed
-      elapsed_time ++;
-    } 
-    digitalWrite(outPin,LOW);
-    Bean.sleep(50);
-  }  else if (currentTone == 1) {
-    //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < (oneNote * longNote)) {
-
+      Bean.sleep(oneNote * shortNote);
+      digitalWrite(outPin,LOW);
+      Bean.sleep(10);
+  } else if (currentTone == 1) {
       digitalWrite(outPin,HIGH);
-
-      // Keep track of how long we pulsed
-      elapsed_time ++;
-    } 
-    digitalWrite(outPin,LOW);
-    Bean.sleep(50);
-  }
-  else if (currentTone == 2){ 
-     //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < (oneNote * innerGap)) {
-
-      // Keep track of how long we pulsed
-      elapsed_time ++;
-    }                                 
-  }  else if (currentTone == 3){ 
-     //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < (oneNote * letterGap)) {
-
-      // Keep track of how long we pulsed
-      elapsed_time ++;
-    }                                 
-  }  
-  else if (currentTone == 4){ 
-     //  played less long than 'duration', pulse speaker HIGH and LOW
-    while (elapsed_time < (oneNote * wordGap)) {
-
-      // Keep track of how long we pulsed
-      elapsed_time ++;
-    }                                 
-  }  
-                           
+      Bean.sleep(oneNote * longNote);
+      digitalWrite(outPin,LOW);
+      Bean.sleep(10);
+  } else if (currentTone == 2){ 
+      digitalWrite(outPin,LOW);
+      Bean.sleep(oneNote * innerGap);                              
+  } else if (currentTone == 3){ 
+      digitalWrite(outPin,LOW);
+      Bean.sleep(oneNote * letterGap);                             
+  } else if (currentTone == 4){ 
+      digitalWrite(outPin,LOW);
+      Bean.sleep(oneNote * wordGap);                     
+  }                         
 }
 
