@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_morse);
         this.myBean = new BeanClass(this);
-        myBean.findBean();
+//        myBean.findBean();
     }
 
 
@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendTextToBean(String message){
-
-        myBean.sendMessage(message);
+        myBean.findBean(message);
+//        myBean.sendMessage(message);
     }
 
 }

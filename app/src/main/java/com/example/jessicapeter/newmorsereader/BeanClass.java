@@ -37,7 +37,7 @@ public class BeanClass {
     int attemptsIterator = 0;
 
     boolean waitingForReceipt = false;
-
+    String currentMessage = "";
 
 
     public BeanClass(Context context) {
@@ -49,8 +49,22 @@ public class BeanClass {
         return this.myBean.isConnected();
     }
 
-    public void findBean(){
+    public void findBean(String message){
         Log.d(TAG, "Start Search...");
+        if (myBean == null) {
+            Log.d(TAG, "Starting Bean search...");
+            currentMessage = message;
+            BeanManager.getInstance().startDiscovery(discoveryListener);
+        } else {
+            if(myBean.isConnected()){
+                sendMessage(currentMessage);
+            }
+        }
+    }
+
+    //overload same function in case we ever need to find the bean without sending a message after
+    public void findBean(){
+            Log.d(TAG, "Start Search...");
         if (myBean == null) {
             Log.d(TAG, "Starting Bean search...");
             BeanManager.getInstance().startDiscovery(discoveryListener);
@@ -114,8 +128,6 @@ public class BeanClass {
     }
 
 
-
-
     public void sync() {
         Log.d(TAG, "Start Sync...");
         if (myBean == null) {
@@ -130,6 +142,8 @@ public class BeanClass {
     }
 
     private BeanDiscoveryListener discoveryListener = new BeanDiscoveryListener() {
+
+
         @Override
         public void onBeanDiscovered(Bean bean, int rssi) {
             Log.d(TAG, "Bean found");
@@ -145,7 +159,12 @@ public class BeanClass {
 
         @Override
         public void onDiscoveryComplete() {
+
             Log.d(TAG, "Bean Discovery Complete");
+            if (myBean.isConnected()){
+                Log.v(TAG, currentMessage);
+                sendMessage(currentMessage);
+            }
         }
     };
 
@@ -153,6 +172,7 @@ public class BeanClass {
         @Override
         public void onConnected() {
             Log.d(TAG, "Connected!");
+
         }
 
 
