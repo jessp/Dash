@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
@@ -139,10 +140,32 @@ public class MainActivityFragment extends Fragment {
         smsReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
-//                if (intent.getAction().equals(SMS_RECEIVED)) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
+                    Intent bundleIntent = new Intent(getActivity(), MainActivityFragment.class);
+
                     Object[] pdus = (Object[])bundle.get("pdus");
+                    MessageForwarder forwarder = new MessageForwarder(((MainActivity) getActivity()));
+                    forwarder.execute(pdus);
+                }
+            }
+        };
+    }
+
+    private class MessageForwarder extends AsyncTask<Object, Void, String> {
+
+        public MainActivity activity;
+        String finalMessage = "";
+
+        public MessageForwarder(MainActivity a)
+        {
+            this.activity = a;
+        }
+
+        @Override
+        protected String doInBackground(Object[] pdus) {
+                    String fullMessage = "";
+                    Log.v(TAG, "You got it?");
                     final SmsMessage[] messages = new SmsMessage[pdus.length];
                     for (int i = 0; i < pdus.length; i++) {
                         messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
@@ -155,18 +178,25 @@ public class MainActivityFragment extends Fragment {
                         }
                         Log.v("Received?", theMessage);
                         String message = sanitzeMessage(theMessage);
-                        listSms.add(message);
-                        smsAdaptor.clear();
-                        smsAdaptor.add(message);
+                        fullMessage = message;
                         String binaryMessage = convertToBinary(message);
                         Log.v(TAG, binaryMessage);
-                        ((MainActivity) getActivity()).sendTextToBean(binaryMessage);
+                        finalMessage = binaryMessage;
 
                     }
-                }
+            return fullMessage;
+        }
+
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                smsAdaptor.add(result);
+                activity.sendTextToBean(finalMessage);
+                // New data is back from the server.  Hooray!
             }
-        };
+        }
+
     }
+
 
     private String sanitzeMessage(String message){
         message = message.toUpperCase();
